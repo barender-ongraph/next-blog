@@ -1,29 +1,30 @@
 // app/post/[slug]/page.tsx
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { BlogPost } from "@/types/post.type";
 import Image from "next/image";
 import Link from "next/link";
 import { postQuery } from "@/sanity/lib/queries";
 import { SlArrowLeft } from "react-icons/sl";
-
-interface Props {
-  params: {
-    slug: string;
-  };
-}
+import { BlogPost } from "../../../../types/post.type";
+import { notFound } from "next/navigation";
 
 async function getPost(slug: string) {
-  return client.fetch(postQuery, { slug });
+  try {
+    const post = await client.fetch<BlogPost>(postQuery, { slug });
+    return post;
+  } catch (error) {
+    console.error("Error fetching post:", error);
+    return null;
+  }
 }
 
-export default async function PostPage({ params }: Props) {
-  const post: BlogPost = await getPost(params.slug);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function PostPage({ params }: any) {
+  const post = await getPost((await params).slug);
 
   if (!post) {
-    return <div>Post not found</div>;
+    notFound();
   }
-
   return (
     <main className="mx-auto max-w-7xl px-6 lg:px-8 my-8">
       <div className="my-8 flex flex-row items-center gap-2 text-gray-600">

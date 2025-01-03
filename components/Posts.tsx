@@ -2,11 +2,11 @@
 import React from "react";
 import { client } from "@/sanity/lib/client";
 import { postsQuery } from "@/sanity/lib/queries";
-import { BlogPost } from "@/types/post.type";
 import PostCard from "./PostCard";
 import PostCardSkeleton from "./PostCardSkeleton";
 import ErrorBoundary from "./ErrorBoundary";
 import { GRID, IMAGES, MESSAGES, STATUS } from "../config/constants";
+import { BlogPost } from "../types/post.type";
 
 interface PostsResponse {
   posts: BlogPost[];

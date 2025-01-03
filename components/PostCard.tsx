@@ -2,12 +2,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
-import { BlogPost } from "@/types/post.type";
 import Avatar from "./Avatar";
 
 import { IMAGES } from "../config/constants";
 import { BaseComponentProps } from "../types/component.types";
 import React from "react";
+import { BlogPost } from "../types/post.type";
 
 export interface PostCardProps extends BaseComponentProps {
   post: BlogPost;

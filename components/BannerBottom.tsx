@@ -3,7 +3,7 @@ import React from "react";
 import { MdOutlineMonitor } from "react-icons/md";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { GoComment } from "react-icons/go";
-import { ActionItemProps } from "@/types/post.type";
+import { ActionItemProps } from "../types/post.type";
 
 const actionItems: ActionItemProps[] = [
   {

@@ -1,9 +1,9 @@
 // app/category/[categoryId]/page.tsx
 import { client } from "@/sanity/lib/client";
 import { notFound } from "next/navigation";
-import { BlogPost, Category, CategoryPageProps } from "@/types/post.type";
-import PostCard from "../../../../components/PostCard";
 import { categoryPostsQuery, categoryQuery } from "@/sanity/lib/queries";
+import { BlogPost, Category } from "../../../../types/post.type";
+import PostCard from "../../../../components/PostCard";
 
 // Data fetching functions
 async function getPostsByCategory(categoryId: string) {
@@ -34,23 +34,50 @@ async function getCategory(categoryId: string) {
 const CategoryHeader = ({ title, description }: Category) => (
   <div className="text-center my-12">
     <h1 className="text-4xl font-bold text-gray-900 my-10">{title}</h1>
-    {description && <p className="text-lg text-gray-600 my-6">{description}</p>}
+    {description && (
+      <p className="text-lg text-gray-600 my-6 max-w-2xl mx-auto">
+        {description}
+      </p>
+    )}
   </div>
 );
 
 const PostsGrid = ({ posts }: { posts: BlogPost[] }) => (
-  <div className="grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+  <div className="grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 mx-auto lg:mx-0 lg:max-w-none lg:grid-cols-3">
     {posts.map((post) => (
       <PostCard key={post._id} post={post} />
     ))}
   </div>
 );
 
+const EmptyState = () => (
+  <div className="text-center py-12">
+    <h3 className="text-lg font-medium text-gray-900 mb-2">No posts found</h3>
+    <p className="text-gray-600">
+      There are currently no posts in this category.
+    </p>
+  </div>
+);
+
+const ErrorState = ({ message }: { message: string }) => (
+  <div className="text-center py-12">
+    <h3 className="text-lg font-medium text-red-600 mb-2">Error</h3>
+    <p className="text-gray-600">{message}</p>
+  </div>
+);
+
 // Main Component
-export default async function CategoryPage({ params }: CategoryPageProps) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function CategoryPage({ params }: any) {
+  const categoryId = params.categoryId;
+
+  if (!categoryId) {
+    notFound();
+  }
+
   const [category, { posts, error }] = await Promise.all([
-    getCategory(params.categoryId),
-    getPostsByCategory(params.categoryId),
+    getCategory(categoryId),
+    getPostsByCategory(categoryId),
   ]);
 
   if (!category) {
@@ -58,17 +85,18 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <CategoryHeader {...category} />
-      {error ? (
-        <p className="text-center text-red-600 py-8">{error}</p>
-      ) : posts.length === 0 ? (
-        <p className="text-center text-gray-600 py-8">
-          No posts found in this category.
-        </p>
-      ) : (
-        <PostsGrid posts={posts} />
-      )}
-    </div>
+
+      <div className="mb-16">
+        {error ? (
+          <ErrorState message={error} />
+        ) : posts.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <PostsGrid posts={posts} />
+        )}
+      </div>
+    </main>
   );
 }
