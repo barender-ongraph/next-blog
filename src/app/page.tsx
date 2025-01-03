@@ -1,4 +1,3 @@
-"use client";
 import Banner from "../../components/Banner";
 import BannerBottom from "../../components/BannerBottom";
 import Posts from "../../components/Posts";

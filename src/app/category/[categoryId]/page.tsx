@@ -69,7 +69,7 @@ const ErrorState = ({ message }: { message: string }) => (
 // Main Component
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function CategoryPage({ params }: any) {
-  const categoryId = params.categoryId;
+  const categoryId = (await params).categoryId;
 
   if (!categoryId) {
     notFound();
